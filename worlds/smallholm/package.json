@@ -1,0 +1,13 @@
+{
+  "name": "@loom/world-smallholm",
+  "version": "0.1.0",
+  "description": "Smallholm - the reference autonomous world built on Loom (on-chain economy with agent-driven NPCs).",
+  "type": "module",
+  "dependencies": {
+    "@loom/sdk": "workspace:*"
+  },
+  "scripts": {
+    "start": "node --experimental-strip-types src/run.ts",
+    "test": "node --experimental-strip-types --test test/world.test.ts"
+  }
+}

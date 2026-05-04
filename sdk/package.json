@@ -1,0 +1,12 @@
+{
+  "name": "@loom/sdk",
+  "version": "0.1.0",
+  "description": "Loom client SDK - typed client, indexer, codegen, and a local engine runtime mirroring the on-chain program.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "node --experimental-strip-types --test test/hash.test.ts"
+  }
+}

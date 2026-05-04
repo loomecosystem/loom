@@ -1,0 +1,20 @@
+[package]
+name = "loom-engine"
+version = "0.1.0"
+edition = "2021"
+description = "Loom - the on-chain ECS engine program (Solana/Anchor shell over the deterministic core)."
+license = "MIT"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "loom_engine"
+
+[features]
+default = []
+cpi = ["no-entrypoint"]
+no-entrypoint = []
+no-idl = []
+idl-build = ["anchor-lang/idl-build"]
+
+[dependencies]
+anchor-lang = { version = "0.31.1", features = ["init-if-needed"] }

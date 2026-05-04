@@ -1,0 +1,18 @@
+[toolchain]
+
+[features]
+resolution = true
+skip-lint = false
+
+[programs.localnet]
+loom_engine = "26jAdoBMqG5zzNDQSRHHt7WA5hqbeZ6Lm33Sd2o96GiC"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "Localnet"
+wallet = "~/.config/solana/id.json"
+
+[scripts]
+test = "echo 'engine-core: cargo test --manifest-path engine-core/Cargo.toml; sdk/world: pnpm -r test'"
