@@ -1,0 +1,19 @@
+[package]
+name = "loom-engine-core"
+version = "0.1.0"
+edition = "2021"
+description = "Loom - the deterministic core of an on-chain ECS game engine for Solana."
+license = "MIT"
+repository = "https://github.com/loom-engine/loom"
+
+[lib]
+name = "loom_engine_core"
+path = "src/lib.rs"
+
+# The core is intentionally dependency-free. Everything here is pure, deterministic
+# computation over plain bytes so it can be (a) host-tested with `cargo test`, and
+# (b) compiled into the on-chain Anchor program behind `no_std` + `alloc` later.
+[dependencies]
+
+[profile.release]
+overflow-checks = true
