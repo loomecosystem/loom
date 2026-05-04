@@ -1,0 +1,23 @@
+# Rust
+/target
+**/target
+Cargo.lock
+
+# Anchor
+.anchor
+test-ledger
+**/*.so
+
+# Node / pnpm
+node_modules
+**/node_modules
+dist
+*.tsbuildinfo
+
+# Solana keys (never commit)
+*.json.key
+keypairs/
+
+# OS / editor
+.DS_Store
+*.log
