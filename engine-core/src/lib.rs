@@ -2,5 +2,7 @@
 //! program and the TypeScript SDK. Pure, dependency-free computation over bytes.
 
 pub mod addressing;
+pub mod error;
 pub mod hash;
 pub mod ids;
+pub mod schema;
