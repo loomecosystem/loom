@@ -9,3 +9,11 @@ pub mod ids;
 pub mod schema;
 pub mod system;
 pub mod world;
+
+pub use error::EngineError;
+pub use ids::{ComponentId, EntityId, SystemId, WorldId};
+pub use schema::{ComponentSchema, Field, FieldType, SchemaRegistry};
+pub use system::{Access, System, SystemCtx};
+pub use world::World;
+
+pub type Result<T> = core::result::Result<T, EngineError>;
