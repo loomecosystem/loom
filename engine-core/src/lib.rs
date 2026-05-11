@@ -8,6 +8,7 @@ pub mod hash;
 pub mod ids;
 pub mod schema;
 pub mod system;
+pub mod tick;
 pub mod world;
 
 pub use error::EngineError;
