@@ -39,7 +39,7 @@ impl Budget {
     /// How many entities fit in this budget, clamped to at least one so a sweep
     /// always makes progress even if one entity's work exceeds the CU ceiling.
     pub fn max_entities(&self) -> u32 {
-        (self.max_cu / self.cu_per_entity) as u32
+        ((self.max_cu / self.cu_per_entity).max(1)) as u32
     }
 }
 
