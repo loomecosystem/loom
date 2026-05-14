@@ -12,3 +12,7 @@ export { ComponentSchema, SchemaRegistry, field, fieldSize, fieldTag } from "./s
 export type { Field, FieldType } from "./schema.ts";
 
 export { Record } from "./record.ts";
+
+export { World } from "./world.ts";
+export { Access, SystemCtx } from "./system.ts";
+export type { System } from "./system.ts";
