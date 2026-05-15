@@ -23,3 +23,4 @@ export type { Cursor, CrankReceipt } from "./tick.ts";
 export { Indexer, decodeRecord } from "./indexer.ts";
 export type { FieldValue, DecodedRecord, EntityView, ComponentRow } from "./indexer.ts";
 export { LoomClient } from "./client.ts";
+export { generateClient } from "./codegen.ts";
