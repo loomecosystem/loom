@@ -19,3 +19,7 @@ export type { System } from "./system.ts";
 
 export { Budget, crank, crankDirty, crankerReward, runToCompletion, startCursor } from "./tick.ts";
 export type { Cursor, CrankReceipt } from "./tick.ts";
+
+export { Indexer, decodeRecord } from "./indexer.ts";
+export type { FieldValue, DecodedRecord, EntityView, ComponentRow } from "./indexer.ts";
+export { LoomClient } from "./client.ts";
