@@ -16,3 +16,6 @@ export { Record } from "./record.ts";
 export { World } from "./world.ts";
 export { Access, SystemCtx } from "./system.ts";
 export type { System } from "./system.ts";
+
+export { Budget, crank, crankDirty, crankerReward, runToCompletion, startCursor } from "./tick.ts";
+export type { Cursor, CrankReceipt } from "./tick.ts";
