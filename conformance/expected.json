@@ -1,0 +1,18 @@
+{
+  "scenario": "loom-conformance-v1",
+  "description": "Shared determinism vector. Built identically by the Rust core (engine-core/tests/conformance.rs) and the TypeScript runtime (sdk/test/conformance.test.ts); both must produce this state hash.",
+  "world": {
+    "id": 42,
+    "authority": "0x0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "steps": [
+    "register Position { x: i64, y: i64 }  -> component 0",
+    "register Velocity { dx: i64, dy: i64 } -> component 1",
+    "register Health   { hp: u32, alive: bool } -> component 2",
+    "spawn entities 1..=6",
+    "for i in 1..=6: Position{x:i, y:2i}, Velocity{dx:i, dy:-i}, Health{hp:100-10i, alive:i%2==1}",
+    "run Movement (reads Velocity, writes Position) for 3 full sweeps",
+    "state_hash"
+  ],
+  "expected_state_hash": "0x80b9a6c42a0e765f"
+}
