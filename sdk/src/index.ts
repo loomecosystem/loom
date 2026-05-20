@@ -24,3 +24,6 @@ export { Indexer, decodeRecord } from "./indexer.ts";
 export type { FieldValue, DecodedRecord, EntityView, ComponentRow } from "./indexer.ts";
 export { LoomClient } from "./client.ts";
 export { generateClient } from "./codegen.ts";
+
+export { ComputeBridge } from "./bridge.ts";
+export type { ClaimStatus, ComputeClaim } from "./bridge.ts";
