@@ -7,6 +7,6 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "test": "node --experimental-strip-types --test test/hash.test.ts test/addressing.test.ts test/ecs.test.ts test/tick.test.ts test/conformance.test.ts"
+    "test": "node --experimental-strip-types --test test/hash.test.ts test/addressing.test.ts test/ecs.test.ts test/tick.test.ts test/conformance.test.ts test/bridge.test.ts"
   }
 }
