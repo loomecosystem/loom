@@ -27,3 +27,5 @@ export { generateClient } from "./codegen.ts";
 
 export { ComputeBridge } from "./bridge.ts";
 export type { ClaimStatus, ComputeClaim } from "./bridge.ts";
+
+export { ModPolicy, CrossWorldRef, admitMod } from "./mods.ts";
