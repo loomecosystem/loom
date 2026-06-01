@@ -1,4 +1,4 @@
-// @loom/sdk - public exports.
+// @loom/sdk - typed client, indexer, codegen, and a local engine runtime.
 
 export const LOOM_SDK_VERSION = "0.1.0";
 
@@ -8,24 +8,40 @@ export type { Address } from "./addressing.ts";
 export { EngineError } from "./errors.ts";
 export type { EngineErrorCode } from "./errors.ts";
 
-export { ComponentSchema, SchemaRegistry, field, fieldSize, fieldTag } from "./schema.ts";
+export {
+  ComponentSchema,
+  SchemaRegistry,
+  field,
+  fieldSize,
+  fieldTag,
+} from "./schema.ts";
 export type { Field, FieldType } from "./schema.ts";
 
 export { Record } from "./record.ts";
-
 export { World } from "./world.ts";
 export { Access, SystemCtx } from "./system.ts";
 export type { System } from "./system.ts";
 
-export { Budget, crank, crankDirty, crankerReward, runToCompletion, startCursor } from "./tick.ts";
+export {
+  Budget,
+  crank,
+  crankDirty,
+  crankerReward,
+  runToCompletion,
+  startCursor,
+} from "./tick.ts";
 export type { Cursor, CrankReceipt } from "./tick.ts";
-
-export { Indexer, decodeRecord } from "./indexer.ts";
-export type { FieldValue, DecodedRecord, EntityView, ComponentRow } from "./indexer.ts";
-export { LoomClient } from "./client.ts";
-export { generateClient } from "./codegen.ts";
 
 export { ComputeBridge } from "./bridge.ts";
 export type { ClaimStatus, ComputeClaim } from "./bridge.ts";
 
 export { ModPolicy, CrossWorldRef, admitMod } from "./mods.ts";
+
+export { Economy, standardFees } from "./economy.ts";
+export type { FeeSchedule, Treasury, WorldLedger, CrankBill } from "./economy.ts";
+
+export { Indexer, decodeRecord } from "./indexer.ts";
+export type { FieldValue, DecodedRecord, EntityView, ComponentRow } from "./indexer.ts";
+
+export { generateClient } from "./codegen.ts";
+export { LoomClient } from "./client.ts";
