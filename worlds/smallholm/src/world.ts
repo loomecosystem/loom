@@ -17,6 +17,19 @@ export const GRID = 12n;
 /** NPC archetypes. */
 export const FARMER = 0;
 export const SOLDIER = 1;
+export const SCOUT = 2;
+
+/** Up to this many waypoints fit in a Route's packed `data` field. */
+export const MAX_WAYPOINTS = 32;
+
+/**
+ * Terrain: a wall down column x=6 (rows 0..9) with a gap at the bottom. A scout
+ * crossing the map must route around it; that pathfinding runs off-chain and
+ * settles through the compute bridge.
+ */
+export function isBlocked(x: bigint, y: bigint): boolean {
+  return x === 6n && y >= 0n && y <= 9n;
+}
 
 // Economy / combat tuning.
 const FARM_YIELD = 3n; // grain produced per tick while on the home plot
@@ -33,6 +46,7 @@ export interface Smallholm {
   stats: number;
   inventory: number;
   agent: number;
+  route: number;
   systems: System[];
 }
 
@@ -93,6 +107,7 @@ class AgentSystem implements System {
     }
 
     const kind = ctx.readU8(agent, e, "kind");
+    if (kind === SCOUT) return; // scouts move via their settled Route instead
     const seed = ctx.readU64(agent, e, "seed");
     const homeX = ctx.readI64(agent, e, "homeX");
     const homeY = ctx.readI64(agent, e, "homeY");
@@ -220,6 +235,38 @@ class UpkeepSystem implements System {
   }
 }
 
+/**
+ * Walks the scout one waypoint per tick along the Route the compute bridge
+ * settled onto it. Entities with an empty Route (len 0) are no-ops, so this is
+ * safe to run every tick.
+ */
+class FollowRouteSystem implements System {
+  s: Smallholm;
+  constructor(s: Smallholm) {
+    this.s = s;
+  }
+  id() {
+    return 14;
+  }
+  access() {
+    return Access.new().withReads([this.s.route]).withWrites([this.s.position, this.s.route]);
+  }
+  query() {
+    return this.s.route;
+  }
+  run(ctx: SystemCtx, e: bigint) {
+    const { route, position } = this.s;
+    const len = ctx.readU8(route, e, "len");
+    const cursor = ctx.readU8(route, e, "cursor");
+    if (cursor >= len) return; // arrived (or no route yet)
+    const data = ctx.readBytes(route, e, "data");
+    const x = data[2 * cursor];
+    const y = data[2 * cursor + 1];
+    ctx.mutate(position, e, (r) => r.setI64("x", BigInt(x)).setI64("y", BigInt(y)));
+    ctx.mutate(route, e, (r) => r.setU8("cursor", cursor + 1));
+  }
+}
+
 /** Register Smallholm's Components and Systems against a fresh world. */
 export function createSmallholm(worldId: bigint = 1n): Smallholm {
   const loom = LoomClient.local(worldId);
@@ -240,13 +287,20 @@ export function createSmallholm(worldId: bigint = 1n): Smallholm {
     field("homeY", "i64"),
     field("rival", "entity"),
   ]);
+  const route = loom.registerComponent("Route", [
+    field("len", "u8"),
+    field("cursor", "u8"),
+    field("inputHash", "u64"),
+    field("data", { bytes: MAX_WAYPOINTS * 2 }),
+  ]);
 
-  const s: Smallholm = { loom, position, stats, inventory, agent, systems: [] };
+  const s: Smallholm = { loom, position, stats, inventory, agent, route, systems: [] };
   s.systems = [
     new AgentSystem(s),
     new CombatSystem(s),
     new FarmSystem(s),
     new UpkeepSystem(s),
+    new FollowRouteSystem(s),
   ];
   return s;
 }
