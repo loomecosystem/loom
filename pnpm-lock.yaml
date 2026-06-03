@@ -1,0 +1,17 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .: {}
+
+  sdk: {}
+
+  worlds/smallholm:
+    dependencies:
+      '@loom/sdk':
+        specifier: workspace:*
+        version: link:../../sdk
