@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="banner.png" alt="Loom" width="320">
+</p>
+
 # Loom
 
 A game engine for on-chain worlds, supplied as a protocol.
