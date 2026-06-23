@@ -149,3 +149,26 @@ test("a finalized result cannot be consumed against a different request", () => 
     (e: unknown) => e instanceof EngineError && e.code === "ClaimInputMismatch",
   );
 });
+
+test("a verified result finalizes immediately, with no window", () => {
+  const packed = packPath(PATH);
+  const resultHash = fnv1a(packed);
+  // Stand-in for an on-chain SNARK verifier: a one-byte proof token that must bind
+  // the posted result's hash.
+  const verify = (_inp: bigint, res: bigint, proof: Uint8Array) =>
+    res === resultHash && proof.length > 0 && proof[0] === 1;
+
+  const bridge = new ComputeBridge(20n);
+  const worker = new Uint8Array(32);
+
+  // A proof the verifier rejects is refused outright.
+  assert.throws(
+    () => bridge.postVerified(PATHFIND, REQUEST_HASH, packed, worker, Uint8Array.of(0), verify),
+    (e: unknown) => e instanceof EngineError && e.code === "FraudProofInvalid",
+  );
+
+  // A valid proof finalizes on the spot - consumable without a finalize() call.
+  const claim = bridge.postVerified(PATHFIND, REQUEST_HASH, packed, worker, Uint8Array.of(1), verify);
+  assert.equal(bridge.get(claim).status.kind, "finalized");
+  assert.deepEqual(bridge.consume(claim, REQUEST_HASH), packed);
+});
