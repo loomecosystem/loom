@@ -12,6 +12,7 @@ export type EngineErrorCode =
   | "ClaimNotFinalized"
   | "ClaimWindowOpen"
   | "ClaimAlreadySettled"
+  | "ClaimInputMismatch"
   | "FraudProofInvalid"
   | "ModPermissionDenied"
   | "CrossWorldMismatch"

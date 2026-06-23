@@ -135,3 +135,17 @@ test("an honest result cannot be slashed", () => {
   bridge.finalize(claim, 25n);
   assert.equal(bridge.get(claim).status.kind, "finalized");
 });
+
+test("a finalized result cannot be consumed against a different request", () => {
+  const bridge = new ComputeBridge(20n);
+  const claim = bridge.postResult(PATHFIND, REQUEST_HASH, packPath(PATH), new Uint8Array(32), 1_000n, 0n);
+  bridge.finalize(claim, 25n);
+
+  // Its own request: fine.
+  assert.deepEqual(bridge.consume(claim, REQUEST_HASH), packPath(PATH));
+  // A different request: a distinct mismatch error, not FraudProofInvalid.
+  assert.throws(
+    () => bridge.consume(claim, REQUEST_HASH ^ 1n),
+    (e: unknown) => e instanceof EngineError && e.code === "ClaimInputMismatch",
+  );
+});

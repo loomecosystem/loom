@@ -121,7 +121,10 @@ export class ComputeBridge {
       throw new EngineError("ClaimNotFinalized", "compute claim is not finalized", { id });
     }
     if (claim.inputHash !== expectedInputHash) {
-      throw new EngineError("FraudProofInvalid", "result answers a different request");
+      throw new EngineError("ClaimInputMismatch", "result answers a different request", {
+        expected: expectedInputHash,
+        got: claim.inputHash,
+      });
     }
     return claim.result;
   }
