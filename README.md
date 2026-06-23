@@ -4,8 +4,6 @@
 
 # Loom
 
-CA : 4NVtTJpDWFydrEfaYV9UFHt868XbPZ6SkG7QvYuppump
-
 A game engine for on-chain worlds, supplied as a protocol.
 
 Most "fully on-chain" games rebuild the same plumbing - state model, ticks,
