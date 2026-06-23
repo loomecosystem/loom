@@ -58,10 +58,9 @@ export function crank(
   const hasMore = ids.length > maxN;
   const batch = ids.slice(0, maxN);
 
-  for (const e of batch) {
-    const ctx = new SystemCtx(world, access, slot);
-    system.run(ctx, e);
-  }
+  // One ctx for the whole batch: access and slot are constant across the crank.
+  const ctx = new SystemCtx(world, access, slot);
+  for (const e of batch) system.run(ctx, e);
 
   const processed = batch.length;
   cursor.processed += BigInt(processed);
@@ -92,10 +91,8 @@ export function crankDirty(world: World, system: System, slot: bigint): number {
     .dirtyPairs()
     .filter((p) => p.component === query)
     .map((p) => p.entity);
-  for (const e of targets) {
-    const ctx = new SystemCtx(world, access, slot);
-    system.run(ctx, e);
-  }
+  const ctx = new SystemCtx(world, access, slot);
+  for (const e of targets) system.run(ctx, e);
   return targets.length;
 }
 
