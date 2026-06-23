@@ -15,6 +15,7 @@ import {
   field,
   standardFees,
   startCursor,
+  treasuryTotal,
 } from "../src/index.ts";
 
 const WORLD = 1n;
@@ -78,6 +79,7 @@ test("world pays metered fees; crankers, protocol and grants accrue exactly", ()
   assert.equal(econ.chargeStorage(WORLD, world.storageBytes()), 4_000n);
   assert.equal(econ.treasury.protocol, 10_875n);
   assert.equal(econ.treasury.grants, 3_625n);
+  assert.equal(treasuryTotal(econ.treasury), 14_500n);
 
   econ.disburseGrant(3_000n);
   assert.equal(econ.treasury.grants, 625n);

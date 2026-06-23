@@ -37,7 +37,7 @@ export type { ClaimStatus, ComputeClaim } from "./bridge.ts";
 
 export { ModPolicy, CrossWorldRef, admitMod } from "./mods.ts";
 
-export { Economy, standardFees } from "./economy.ts";
+export { Economy, standardFees, treasuryTotal } from "./economy.ts";
 export type { FeeSchedule, Treasury, WorldLedger, CrankBill } from "./economy.ts";
 
 export { Indexer, decodeRecord } from "./indexer.ts";

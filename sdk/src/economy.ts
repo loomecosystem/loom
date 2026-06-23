@@ -29,6 +29,11 @@ export interface Treasury {
   grants: bigint;
 }
 
+/** Total protocol-side value held: net protocol revenue plus the grants pool. */
+export function treasuryTotal(t: Treasury): bigint {
+  return t.protocol + t.grants;
+}
+
 export interface WorldLedger {
   balance: bigint;
   spent: bigint;

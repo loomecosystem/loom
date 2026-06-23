@@ -10,7 +10,7 @@
 //   • token              - the engine charges fees; protocol + grants accrue
 //   • determinism        - the world reduces to one reproducible hash
 
-import { ComputeBridge, Economy, standardFees, toHex64 } from "@loom/sdk";
+import { ComputeBridge, Economy, standardFees, toHex64, treasuryTotal } from "@loom/sdk";
 import { FARMER, GRID, SCOUT, createSmallholm, isBlocked, step, type Smallholm } from "./world.ts";
 import { TitheMod, dispatchScout, settleScoutRoute, spawnSettlement } from "./agents.ts";
 
@@ -110,6 +110,7 @@ function main(): void {
   console.log(`  storage rent charged   : ${rent}  (${s.loom.world.storageBytes()} bytes)`);
   console.log(`  protocol treasury      : ${econ.treasury.protocol}`);
   console.log(`  grants pool            : ${econ.treasury.grants}`);
+  console.log(`  total engine revenue   : ${treasuryTotal(econ.treasury)}`);
 
   banner("indexer - reconstructed view of the scout");
   const view = s.loom.indexer().entityView(scout);

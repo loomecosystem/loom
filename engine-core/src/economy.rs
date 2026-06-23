@@ -55,6 +55,13 @@ pub struct Treasury {
     pub grants: u64,
 }
 
+impl Treasury {
+    /// Total protocol-side value held: net protocol revenue plus the grants pool.
+    pub fn total(&self) -> u64 {
+        self.protocol + self.grants
+    }
+}
+
 /// One world's prepaid engine-fee account.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub struct WorldLedger {
@@ -214,6 +221,7 @@ mod tests {
         assert_eq!(econ.balance(1), 1_000_000 - 6_000);
         assert_eq!(econ.treasury.protocol, 2_700);
         assert_eq!(econ.treasury.grants, 900);
+        assert_eq!(econ.treasury.total(), 3_600);
     }
 
     #[test]
