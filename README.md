@@ -4,6 +4,8 @@
 
 # Loom
 
+CA : yJMYWHBMTTdk5RxVErGGdxAa7MBFSFGVKq1YDhULoom
+
 A game engine for on-chain worlds, supplied as a protocol.
 
 Most "fully on-chain" games rebuild the same plumbing - state model, ticks,
