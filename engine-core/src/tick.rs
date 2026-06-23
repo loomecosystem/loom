@@ -114,9 +114,13 @@ pub fn crank<S: System + ?Sized>(
     let has_more = ids.len() > max_n;
     ids.truncate(max_n);
 
-    for &e in &ids {
-        let mut ctx = SystemCtx::new(world, access.clone(), slot);
-        system.run(&mut ctx, e)?;
+    // One ctx for the whole batch: access and slot are constant across the crank,
+    // so there is no need to rebuild (and re-clone the access set) per entity.
+    {
+        let mut ctx = SystemCtx::new(world, access, slot);
+        for &e in &ids {
+            system.run(&mut ctx, e)?;
+        }
     }
 
     let processed = ids.len() as u32;
@@ -170,9 +174,11 @@ pub fn crank_dirty<S: System + ?Sized>(
         .map(|(_, e)| e)
         .collect();
 
-    for &e in &targets {
-        let mut ctx = SystemCtx::new(world, access.clone(), slot);
-        system.run(&mut ctx, e)?;
+    {
+        let mut ctx = SystemCtx::new(world, access, slot);
+        for &e in &targets {
+            system.run(&mut ctx, e)?;
+        }
     }
     Ok(targets.len() as u32)
 }
