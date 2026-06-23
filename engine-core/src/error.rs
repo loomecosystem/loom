@@ -38,9 +38,9 @@ pub enum EngineError {
     ClaimInputMismatch { expected: u64, got: u64 },
     /// A fraud proof did not actually contradict the posted result.
     FraudProofInvalid,
-    /// An external System (mod) tried to write a component the world policy
-    /// does not grant it.
-    ModPermissionDenied { component: ComponentId },
+    /// An external System (mod) tried to access a component the world policy
+    /// does not grant it. `write` distinguishes a denied write from a denied read.
+    ModPermissionDenied { component: ComponentId, write: bool },
     /// A cross-world reference pointed at the wrong world, or the referenced
     /// Component's on-chain layout has drifted from what the reference expects.
     CrossWorldMismatch {
@@ -88,9 +88,11 @@ impl core::fmt::Display for EngineError {
                 "compute claim answers a different request: expected input {expected}, claim bound to {got}"
             ),
             FraudProofInvalid => write!(f, "fraud proof does not contradict the result"),
-            ModPermissionDenied { component } => {
-                write!(f, "mod is not permitted to write component {component}")
-            }
+            ModPermissionDenied { component, write } => write!(
+                f,
+                "mod is not permitted to {} component {component}",
+                if *write { "write" } else { "read" }
+            ),
             CrossWorldMismatch { world, component } => write!(
                 f,
                 "cross-world reference to world {world} component {component} does not match"

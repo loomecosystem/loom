@@ -100,7 +100,18 @@ fn third_party_mod_runs_against_existing_world() {
     // A mod that reaches outside the policy is refused admission.
     let teleport = TeleportMod { position };
     let err = admit_mod(&policy, &teleport).unwrap_err();
-    assert_eq!(err, EngineError::ModPermissionDenied { component: position });
+    assert_eq!(err, EngineError::ModPermissionDenied { component: position, write: true });
+}
+
+#[test]
+fn denied_read_is_reported_as_a_read() {
+    // A policy granting only Gold writes, with reads closed. A mod declaring a read
+    // of Position is refused - and the error names a read, not a write.
+    let policy = ModPolicy::new().allow_write(1);
+    let access = Access::new().reads([0]);
+    let err = policy.permits(&access).unwrap_err();
+    assert_eq!(err, EngineError::ModPermissionDenied { component: 0, write: false });
+    assert!(err.to_string().contains("read"), "message should say read: {err}");
 }
 
 #[test]

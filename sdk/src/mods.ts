@@ -33,6 +33,7 @@ export class ModPolicy {
       if (!this.writable.includes(w)) {
         throw new EngineError("ModPermissionDenied", `mod may not write component ${w}`, {
           component: w,
+          write: true,
         });
       }
     }
@@ -41,6 +42,7 @@ export class ModPolicy {
         if (!this.readable.includes(r) && !this.writable.includes(r)) {
           throw new EngineError("ModPermissionDenied", `mod may not read component ${r}`, {
             component: r,
+            write: false,
           });
         }
       }

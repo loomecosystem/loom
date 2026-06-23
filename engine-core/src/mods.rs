@@ -53,13 +53,13 @@ impl ModPolicy {
     pub fn permits(&self, access: &Access) -> Result<(), EngineError> {
         for &w in &access.writes {
             if !self.writable.contains(&w) {
-                return Err(EngineError::ModPermissionDenied { component: w });
+                return Err(EngineError::ModPermissionDenied { component: w, write: true });
             }
         }
         if !self.open_read {
             for &r in &access.reads {
                 if !self.readable.contains(&r) && !self.writable.contains(&r) {
-                    return Err(EngineError::ModPermissionDenied { component: r });
+                    return Err(EngineError::ModPermissionDenied { component: r, write: false });
                 }
             }
         }
