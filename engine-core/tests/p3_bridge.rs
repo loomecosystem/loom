@@ -324,3 +324,37 @@ fn consume_rejects_a_mismatched_request() {
         EngineError::ClaimInputMismatch { expected: input_hash ^ 1, got: input_hash }
     );
 }
+
+#[test]
+fn a_verified_result_finalizes_without_a_window() {
+    // The ZK lane: a result posted with a proof the verifier accepts finalizes
+    // immediately - no bond, no fraud-proof window - and is consumable at once. A
+    // proof the verifier rejects is refused outright, storing nothing.
+    let grid = obstacle_grid();
+    let start = (0u8, 0u8);
+    let goal = (7u8, 0u8);
+    let input_hash = request_hash(&grid, start, goal);
+    let packed = pack_path(&bfs(&grid, start, goal));
+    let result_hash = fnv1a(&packed);
+
+    // Stand-in for an on-chain SNARK verifier: accept a fixed proof token, and only
+    // when it binds the posted result's hash. A real verifier checks a validity proof.
+    let verify = move |_inp: u64, res: u64, proof: &[u8]| proof == b"valid" && res == result_hash;
+
+    let mut bridge = ComputeBridge::new(20);
+
+    // A rejected proof is refused; nothing is stored.
+    assert_eq!(
+        bridge
+            .post_verified(PATHFIND_TASK, input_hash, packed.clone(), [1u8; 32], b"forged", verify)
+            .unwrap_err(),
+        EngineError::FraudProofInvalid
+    );
+
+    // A valid proof finalizes on the spot: no finalize() call, no window to wait out.
+    let claim = bridge
+        .post_verified(PATHFIND_TASK, input_hash, packed.clone(), [1u8; 32], b"valid", verify)
+        .unwrap();
+    assert_eq!(bridge.get(claim).unwrap().status, ClaimStatus::Finalized);
+    assert_eq!(bridge.consume(claim, input_hash).unwrap(), packed.as_slice());
+}
