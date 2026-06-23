@@ -185,7 +185,10 @@ impl ComputeBridge {
             return Err(EngineError::ClaimNotFinalized);
         }
         if claim.input_hash != expected_input_hash {
-            return Err(EngineError::FraudProofInvalid);
+            return Err(EngineError::ClaimInputMismatch {
+                expected: expected_input_hash,
+                got: claim.input_hash,
+            });
         }
         Ok(&claim.result)
     }

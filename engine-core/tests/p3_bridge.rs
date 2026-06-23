@@ -300,3 +300,27 @@ fn honest_result_cannot_be_slashed() {
     bridge.finalize(claim, 25).unwrap();
     assert_eq!(bridge.get(claim).unwrap().status, ClaimStatus::Finalized);
 }
+
+#[test]
+fn consume_rejects_a_mismatched_request() {
+    // A finalized result is bound to the request it answers. Consuming it against a
+    // different input hash is its own error, not a fraud-proof failure - the result
+    // is honest, it just does not answer this question.
+    let grid = obstacle_grid();
+    let start = (0u8, 0u8);
+    let goal = (7u8, 0u8);
+    let input_hash = request_hash(&grid, start, goal);
+    let packed = pack_path(&bfs(&grid, start, goal));
+
+    let mut bridge = ComputeBridge::new(20);
+    let claim = bridge.post_result(PATHFIND_TASK, input_hash, packed, [1u8; 32], 1_000, 0);
+    bridge.finalize(claim, 25).unwrap();
+
+    // Against its own request: consumable.
+    assert!(bridge.consume(claim, input_hash).is_ok());
+    // Against a different request: a distinct mismatch error.
+    assert_eq!(
+        bridge.consume(claim, input_hash ^ 1).unwrap_err(),
+        EngineError::ClaimInputMismatch { expected: input_hash ^ 1, got: input_hash }
+    );
+}

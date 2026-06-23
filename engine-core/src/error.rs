@@ -33,6 +33,9 @@ pub enum EngineError {
     ClaimWindowOpen,
     /// Tried to act on a claim that was already finalized or disputed.
     ClaimAlreadySettled,
+    /// A finalized claim was consumed against a request it does not answer: its
+    /// bound input hash differs from the one the consumer expected.
+    ClaimInputMismatch { expected: u64, got: u64 },
     /// A fraud proof did not actually contradict the posted result.
     FraudProofInvalid,
     /// An external System (mod) tried to write a component the world policy
@@ -80,6 +83,10 @@ impl core::fmt::Display for EngineError {
             ClaimNotFinalized => write!(f, "compute claim is not finalized"),
             ClaimWindowOpen => write!(f, "fraud-proof window is still open"),
             ClaimAlreadySettled => write!(f, "compute claim already settled"),
+            ClaimInputMismatch { expected, got } => write!(
+                f,
+                "compute claim answers a different request: expected input {expected}, claim bound to {got}"
+            ),
             FraudProofInvalid => write!(f, "fraud proof does not contradict the result"),
             ModPermissionDenied { component } => {
                 write!(f, "mod is not permitted to write component {component}")
