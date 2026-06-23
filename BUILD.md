@@ -57,10 +57,12 @@ Everything below is reproducible from a clean checkout after `pnpm install`.
 - Rust: `engine-core/tests/p3_bridge.rs` - BFS computes a path around an obstacle
   off-chain; the result is posted optimistically, finalized after the fraud
   window, settled into a `Route` Component, and a `FollowPath` System walks the
-  unit along it. Also covers the fraud path and that an honest result cannot be
-  slashed.
-- TypeScript: `sdk/test/bridge.test.ts` - the same settle-and-consume flow plus the
-  fraud path.
+  unit along it. Also covers the fraud path, that an honest result cannot be
+  slashed, that a settled result stays bound to its request (consuming it against a
+  different input hash is refused), and the ZK `post_verified` lane that finalizes
+  with no window.
+- TypeScript: `sdk/test/bridge.test.ts` - the same settle-and-consume flow, the
+  fraud path, the request-binding check, and the `postVerified` lane.
 
 ### P4 - Composability
 

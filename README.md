@@ -52,7 +52,7 @@ program also needs the Solana and Anchor toolchains.
 ```bash
 pnpm install
 
-# Rust core (34 tests):
+# Rust core (38 tests):
 cargo test --manifest-path engine-core/Cargo.toml
 
 # on-chain program: type-check + build the deployable SBF bytecode
