@@ -61,6 +61,31 @@ pub fn to_hex(addr: &Address) -> String {
     s
 }
 
+/// Parse a 64-char lowercase hex string back into an [`Address`] - the inverse of
+/// [`to_hex`], for turning an address read from a log or the indexer's keys back
+/// into bytes. Returns `None` unless the input is exactly 32 bytes of hex.
+pub fn from_hex(s: &str) -> Option<Address> {
+    if s.len() != 64 {
+        return None;
+    }
+    let bytes = s.as_bytes();
+    let mut out = [0u8; 32];
+    for (i, slot) in out.iter_mut().enumerate() {
+        let hi = hex_val(bytes[2 * i])?;
+        let lo = hex_val(bytes[2 * i + 1])?;
+        *slot = (hi << 4) | lo;
+    }
+    Some(out)
+}
+
+const fn hex_val(c: u8) -> Option<u8> {
+    match c {
+        b'0'..=b'9' => Some(c - b'0'),
+        b'a'..=b'f' => Some(c - b'a' + 10),
+        _ => None,
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -87,5 +112,14 @@ mod tests {
     fn hex_is_64_chars() {
         let a = component_address(1, 1, 1);
         assert_eq!(to_hex(&a).len(), 64);
+    }
+
+    #[test]
+    fn hex_round_trips() {
+        let a = component_address(42, 3, 1);
+        assert_eq!(from_hex(&to_hex(&a)), Some(a));
+        // Malformed input is rejected, not panicked on.
+        assert_eq!(from_hex("nope"), None);
+        assert_eq!(from_hex(&"zz".repeat(32)), None);
     }
 }

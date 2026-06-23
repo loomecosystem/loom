@@ -38,3 +38,14 @@ export function toHex(addr: Address): string {
   for (const b of addr) s += b.toString(16).padStart(2, "0");
   return s;
 }
+
+/**
+ * Parse a 64-char lowercase hex string back into an address - the inverse of
+ * `toHex`. Returns undefined unless the input is exactly 32 bytes of hex.
+ */
+export function fromHex(s: string): Address | undefined {
+  if (!/^[0-9a-f]{64}$/.test(s)) return undefined;
+  const out = new Uint8Array(32);
+  for (let i = 0; i < 32; i++) out[i] = Number.parseInt(s.slice(2 * i, 2 * i + 2), 16);
+  return out;
+}

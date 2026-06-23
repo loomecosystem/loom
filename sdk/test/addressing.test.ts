@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { componentAddress, toHex } from "../src/index.ts";
+import { componentAddress, fromHex, toHex } from "../src/index.ts";
 
 test("addresses are deterministic and distinct per (world, entity, component)", () => {
   const a = componentAddress(1n, 1n, 1);
@@ -21,4 +21,11 @@ test("matches the Rust core byte-for-byte (cross-vectors)", () => {
     toHex(componentAddress(1n, 1n, 0)),
     "eab4eb3cf4099ec1cd7f5bf8baab4771a41e67905fe5a5ae87e9d64b26874f5e",
   );
+});
+
+test("toHex and fromHex round-trip; malformed input is rejected", () => {
+  const a = componentAddress(42n, 3n, 1);
+  assert.deepEqual(fromHex(toHex(a)), a);
+  assert.equal(fromHex("nope"), undefined);
+  assert.equal(fromHex("z".repeat(64)), undefined);
 });
